@@ -15,6 +15,10 @@ COPY src/ src/
 RUN npm run compile
 RUN npm prune --production
 
+COPY /scripts/linker.sh linker.sh
+RUN ["chmod", "+x", "linker.sh"]
+RUN ./linker.sh
+
 FROM node:14.15.4-alpine3.12
 
 RUN apk add --no-cache chromium
@@ -26,6 +30,8 @@ RUN addgroup -S appuser && adduser -S -g appuser appuser \
   && mkdir -p /home/appuser/Downloads /app \
   && chown -R appuser:appuser /home/appuser \
   && chown -R appuser:appuser /app
+
+EXPOSE 8081/tcp
 
 USER appuser
 
